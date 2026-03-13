@@ -1,0 +1,1507 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ShopForge — Multi-Tenant SaaS E-Commerce Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    :root {
+      --ink: #0a0a0f;
+      --ink-soft: #1a1a2e;
+      --ink-muted: #4a4a6a;
+      --ink-faint: #9898b8;
+      --surface: #ffffff;
+      --surface-2: #f4f4f9;
+      --surface-3: #eaeaf5;
+      --border: #e0e0f0;
+      --border-strong: #c8c8e0;
+      --accent: #5b21b6;
+      --accent-2: #7c3aed;
+      --accent-3: #8b5cf6;
+      --accent-light: #ede9fe;
+      --accent-glow: rgba(91, 33, 182, 0.15);
+      --green: #059669;
+      --green-light: #d1fae5;
+      --amber: #d97706;
+      --amber-light: #fef3c7;
+      --red: #dc2626;
+      --red-light: #fee2e2;
+      --blue: #2563eb;
+      --blue-light: #dbeafe;
+      --radius: 12px;
+      --radius-lg: 20px;
+      --shadow-sm: 0 1px 3px rgba(10,10,15,0.06), 0 1px 2px rgba(10,10,15,0.04);
+      --shadow: 0 4px 16px rgba(10,10,15,0.08), 0 2px 6px rgba(10,10,15,0.04);
+      --shadow-lg: 0 16px 40px rgba(10,10,15,0.12), 0 4px 12px rgba(10,10,15,0.06);
+      --shadow-accent: 0 8px 32px rgba(91,33,182,0.2);
+    }
+    
+    html { scroll-behavior: smooth; }
+    
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--surface);
+      color: var(--ink);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    
+    h1, h2, h3, h4, h5 {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-weight: 700;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+    }
+    
+    /* ============================================================
+       NAV
+    ============================================================ */
+    
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      padding: 0 32px;
+      background: rgba(255,255,255,0.88);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; height: 64px;
+      gap: 0;
+    }
+    
+    .nav-logo {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-weight: 800;
+      font-size: 22px;
+      color: var(--ink);
+      text-decoration: none;
+      display: flex; align-items: center; gap: 8px;
+      margin-right: auto;
+    }
+    
+    .nav-logo-mark {
+      width: 32px; height: 32px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-3));
+      border-radius: 8px;
+      display: grid; place-items: center;
+      color: white; font-size: 16px; font-weight: 800;
+    }
+    
+    .nav-links {
+      display: flex; align-items: center; gap: 4px;
+      list-style: none; margin-right: 24px;
+    }
+    
+    .nav-links a {
+      padding: 6px 14px; border-radius: 8px;
+      text-decoration: none; color: var(--ink-muted);
+      font-size: 14px; font-weight: 500;
+      transition: all 0.2s;
+    }
+    
+    .nav-links a:hover { color: var(--ink); background: var(--surface-2); }
+    
+    .nav-actions { display: flex; gap: 10px; align-items: center; }
+    
+    /* ============================================================
+       BUTTONS
+    ============================================================ */
+    
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 10px 20px; border-radius: var(--radius);
+      font-size: 14px; font-weight: 600; cursor: pointer;
+      text-decoration: none; border: none; outline: none;
+      transition: all 0.2s; white-space: nowrap;
+      font-family: 'DM Sans', sans-serif;
+    }
+    
+    .btn-ghost {
+      background: transparent; color: var(--ink-muted);
+      border: 1.5px solid var(--border);
+    }
+    .btn-ghost:hover { background: var(--surface-2); color: var(--ink); border-color: var(--border-strong); }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: white;
+      box-shadow: var(--shadow-accent);
+    }
+    .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 12px 40px rgba(91,33,182,0.3); }
+    .btn-primary:active { transform: translateY(0); }
+    
+    .btn-outline {
+      background: transparent; color: var(--accent);
+      border: 2px solid var(--accent);
+    }
+    .btn-outline:hover { background: var(--accent-light); }
+    
+    .btn-lg { padding: 14px 28px; font-size: 15px; }
+    .btn-sm { padding: 6px 14px; font-size: 13px; }
+    
+    /* ============================================================
+       HERO SECTION
+    ============================================================ */
+    
+    .hero {
+      padding-top: 100px;
+      min-height: 100vh;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      padding-bottom: 80px;
+    }
+    
+    .hero-bg {
+      position: absolute; inset: 0; z-index: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(139,92,246,0.12), transparent),
+                  radial-gradient(ellipse 60% 40% at 100% 50%, rgba(91,33,182,0.08), transparent),
+                  radial-gradient(ellipse 60% 40% at 0% 80%, rgba(124,58,237,0.06), transparent);
+    }
+    
+    .hero-grid {
+      position: absolute; inset: 0;
+      background-image: 
+        linear-gradient(rgba(91,33,182,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(91,33,182,0.04) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+    
+    .hero-content { position: relative; z-index: 1; max-width: 860px; padding: 0 24px; }
+    
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: white; border: 1.5px solid var(--border);
+      border-radius: 100px; padding: 6px 16px;
+      font-size: 13px; font-weight: 500; color: var(--accent);
+      margin-bottom: 28px;
+      box-shadow: var(--shadow-sm);
+      animation: fadeInDown 0.6s ease both;
+    }
+    
+    .hero-badge-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--green); box-shadow: 0 0 0 3px var(--green-light);
+    }
+    
+    .hero h1 {
+      font-size: clamp(48px, 7vw, 88px);
+      font-weight: 800;
+      margin-bottom: 20px;
+      animation: fadeInUp 0.6s 0.1s ease both;
+    }
+    
+    .hero h1 em {
+      font-style: normal;
+      background: linear-gradient(135deg, var(--accent), var(--accent-3), #a78bfa);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    
+    .hero-sub {
+      font-size: 19px; color: var(--ink-muted); max-width: 560px; margin: 0 auto 40px;
+      font-weight: 400; line-height: 1.65;
+      animation: fadeInUp 0.6s 0.2s ease both;
+    }
+    
+    .hero-actions {
+      display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
+      margin-bottom: 60px;
+      animation: fadeInUp 0.6s 0.3s ease both;
+    }
+    
+    .hero-stats {
+      display: flex; gap: 40px; justify-content: center;
+      animation: fadeInUp 0.6s 0.4s ease both;
+    }
+    
+    .hero-stat { text-align: center; }
+    .hero-stat-num {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 28px; font-weight: 800;
+      color: var(--ink);
+    }
+    .hero-stat-num span { color: var(--accent); }
+    .hero-stat-label { font-size: 13px; color: var(--ink-faint); margin-top: 2px; }
+    
+    /* ============================================================
+       PLATFORM PREVIEW
+    ============================================================ */
+    
+    .platform-preview {
+      max-width: 1200px; margin: 0 auto 120px;
+      padding: 0 24px;
+      position: relative;
+    }
+    
+    .preview-window {
+      background: var(--ink);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 40px 100px rgba(10,10,15,0.25), 0 0 0 1px rgba(255,255,255,0.05);
+    }
+    
+    .preview-titlebar {
+      padding: 14px 20px;
+      background: #1a1a2e;
+      display: flex; align-items: center; gap: 12px;
+    }
+    
+    .preview-dots { display: flex; gap: 8px; }
+    .preview-dot {
+      width: 12px; height: 12px; border-radius: 50%;
+    }
+    .preview-dot:nth-child(1) { background: #ff5f56; }
+    .preview-dot:nth-child(2) { background: #ffbd2e; }
+    .preview-dot:nth-child(3) { background: #27c93f; }
+    
+    .preview-url {
+      flex: 1; background: rgba(255,255,255,0.06);
+      border-radius: 6px; padding: 5px 12px;
+      font-size: 13px; color: rgba(255,255,255,0.4);
+      font-family: monospace;
+    }
+    
+    .preview-body {
+      display: grid; grid-template-columns: 240px 1fr;
+      min-height: 480px;
+    }
+    
+    .preview-sidebar {
+      background: #0f0f1a;
+      padding: 24px 16px;
+      border-right: 1px solid rgba(255,255,255,0.06);
+    }
+    
+    .preview-sidebar-logo {
+      display: flex; align-items: center; gap: 10px;
+      padding: 0 8px 24px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      margin-bottom: 24px;
+    }
+    
+    .preview-sidebar-logo-mark {
+      width: 32px; height: 32px; border-radius: 8px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-3));
+      display: grid; place-items: center;
+      font-weight: 800; font-size: 14px; color: white;
+    }
+    
+    .preview-sidebar-logo-text {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-weight: 700; font-size: 15px; color: white;
+    }
+    
+    .preview-nav-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 9px 12px; border-radius: 8px;
+      font-size: 13px; color: rgba(255,255,255,0.45);
+      margin-bottom: 2px; cursor: pointer;
+    }
+    
+    .preview-nav-item.active {
+      background: rgba(139,92,246,0.15);
+      color: #a78bfa;
+    }
+    
+    .preview-nav-icon {
+      width: 16px; height: 16px; border-radius: 4px;
+      background: currentColor; opacity: 0.5;
+    }
+    
+    .preview-main { background: #0a0a14; padding: 28px; }
+    
+    .preview-header {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 28px;
+    }
+    
+    .preview-title {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 20px; font-weight: 700; color: white;
+    }
+    
+    .preview-badge {
+      background: rgba(5,150,105,0.15); color: #34d399;
+      padding: 4px 10px; border-radius: 100px;
+      font-size: 12px; font-weight: 600;
+    }
+    
+    .preview-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+    
+    .preview-stat-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 12px; padding: 16px;
+    }
+    
+    .preview-stat-label { font-size: 11px; color: rgba(255,255,255,0.3); margin-bottom: 6px; }
+    .preview-stat-val {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 22px; font-weight: 700; color: white;
+    }
+    .preview-stat-trend { font-size: 11px; color: #34d399; margin-top: 2px; }
+    
+    .preview-chart-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .preview-chart {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 12px; padding: 16px; height: 120px;
+      display: flex; flex-direction: column;
+    }
+    .preview-chart-title { font-size: 12px; color: rgba(255,255,255,0.4); margin-bottom: 10px; }
+    .preview-chart-bars {
+      flex: 1; display: flex; align-items: flex-end; gap: 4px;
+    }
+    .preview-bar {
+      flex: 1; border-radius: 3px 3px 0 0;
+      background: rgba(139,92,246,0.4);
+      min-height: 8px;
+    }
+    .preview-bar.high { background: rgba(139,92,246,0.8); }
+    .preview-bar.peak { background: #8b5cf6; }
+    
+    /* ============================================================
+       FEATURES SECTION
+    ============================================================ */
+    
+    .section { padding: 100px 24px; max-width: 1200px; margin: 0 auto; }
+    .section-center { text-align: center; }
+    
+    .section-tag {
+      display: inline-block;
+      background: var(--accent-light); color: var(--accent);
+      padding: 5px 14px; border-radius: 100px;
+      font-size: 13px; font-weight: 600; margin-bottom: 20px;
+    }
+    
+    .section-title {
+      font-size: clamp(32px, 4vw, 52px);
+      font-weight: 800; margin-bottom: 16px;
+    }
+    
+    .section-sub {
+      font-size: 18px; color: var(--ink-muted);
+      max-width: 560px; margin: 0 auto 60px;
+      line-height: 1.65;
+    }
+    
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+      background: var(--border);
+      border-radius: 20px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+    
+    .feature-card {
+      background: white;
+      padding: 36px 32px;
+      transition: background 0.2s;
+    }
+    
+    .feature-card:hover { background: var(--surface-2); }
+    
+    .feature-icon {
+      width: 48px; height: 48px; border-radius: 12px;
+      background: var(--accent-light);
+      display: grid; place-items: center; margin-bottom: 20px;
+      font-size: 22px;
+    }
+    
+    .feature-title {
+      font-size: 18px; font-weight: 700; margin-bottom: 10px; color: var(--ink);
+    }
+    
+    .feature-desc { font-size: 14px; color: var(--ink-muted); line-height: 1.65; }
+    
+    /* ============================================================
+       HOW IT WORKS
+    ============================================================ */
+    
+    .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px; }
+    
+    .step { text-align: center; }
+    
+    .step-num {
+      width: 56px; height: 56px; border-radius: 16px;
+      background: var(--ink); color: white;
+      display: grid; place-items: center; margin: 0 auto 20px;
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 20px; font-weight: 800;
+    }
+    
+    .step:nth-child(2) .step-num { background: var(--accent); }
+    .step:nth-child(3) .step-num { background: linear-gradient(135deg, var(--accent), var(--accent-3)); }
+    .step:nth-child(4) .step-num { background: var(--green); }
+    
+    .step-title { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+    .step-desc { font-size: 14px; color: var(--ink-muted); }
+    
+    /* ============================================================
+       PRICING
+    ============================================================ */
+    
+    .pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+    
+    .pricing-card {
+      border: 2px solid var(--border);
+      border-radius: 20px; padding: 36px 32px;
+      position: relative;
+      transition: all 0.2s;
+      background: white;
+    }
+    
+    .pricing-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-4px); }
+    
+    .pricing-card.featured {
+      border-color: var(--accent);
+      background: var(--ink);
+      color: white;
+      box-shadow: var(--shadow-accent);
+    }
+    
+    .pricing-popular {
+      position: absolute; top: -14px; left: 50%; transform: translateX(-50%);
+      background: linear-gradient(135deg, var(--accent), var(--accent-3));
+      color: white; padding: 4px 16px; border-radius: 100px;
+      font-size: 12px; font-weight: 700;
+    }
+    
+    .pricing-plan { font-size: 13px; font-weight: 600; color: var(--ink-muted); margin-bottom: 12px; }
+    .pricing-card.featured .pricing-plan { color: rgba(255,255,255,0.5); }
+    
+    .pricing-price {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 48px; font-weight: 800; margin-bottom: 4px;
+      line-height: 1;
+    }
+    
+    .pricing-period { font-size: 14px; color: var(--ink-muted); margin-bottom: 28px; }
+    .pricing-card.featured .pricing-period { color: rgba(255,255,255,0.4); }
+    
+    .pricing-divider {
+      height: 1px; background: var(--border); margin: 0 0 24px;
+    }
+    .pricing-card.featured .pricing-divider { background: rgba(255,255,255,0.1); }
+    
+    .pricing-features { list-style: none; margin-bottom: 32px; }
+    .pricing-features li {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 14px; color: var(--ink-muted);
+      padding: 6px 0;
+    }
+    .pricing-card.featured .pricing-features li { color: rgba(255,255,255,0.7); }
+    .pricing-check {
+      width: 18px; height: 18px; border-radius: 50%;
+      background: var(--accent-light); color: var(--accent);
+      display: grid; place-items: center; font-size: 11px; flex-shrink: 0;
+    }
+    .pricing-card.featured .pricing-check { background: rgba(139,92,246,0.2); color: #a78bfa; }
+    
+    /* ============================================================
+       DASHBOARD PREVIEW
+    ============================================================ */
+    
+    .dashboard-tabs {
+      display: flex; gap: 2px; background: var(--surface-2);
+      border-radius: 12px; padding: 4px; margin-bottom: 40px;
+      width: fit-content;
+    }
+    
+    .tab-btn {
+      padding: 8px 20px; border-radius: 10px; font-size: 14px; font-weight: 500;
+      border: none; cursor: pointer; background: transparent; color: var(--ink-muted);
+      transition: all 0.2s;
+    }
+    .tab-btn.active { background: white; color: var(--ink); box-shadow: var(--shadow-sm); }
+    
+    .dashboard-demo {
+      background: var(--surface-2); border: 1px solid var(--border);
+      border-radius: 20px; padding: 32px;
+    }
+    
+    .demo-header {
+      display: flex; justify-content: space-between; align-items: center; margin-bottom: 28px;
+    }
+    
+    .demo-title { font-size: 22px; font-weight: 700; }
+    .demo-subtitle { font-size: 14px; color: var(--ink-muted); margin-top: 2px; }
+    
+    .demo-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 28px; }
+    
+    .demo-stat {
+      background: white; border: 1px solid var(--border);
+      border-radius: 12px; padding: 20px;
+    }
+    
+    .demo-stat-icon {
+      width: 36px; height: 36px; border-radius: 8px;
+      display: grid; place-items: center; font-size: 16px; margin-bottom: 12px;
+    }
+    
+    .demo-stat-val { font-family: 'Bricolage Grotesque', sans-serif; font-size: 24px; font-weight: 800; }
+    .demo-stat-label { font-size: 12px; color: var(--ink-muted); }
+    .demo-stat-change { font-size: 12px; color: var(--green); font-weight: 600; margin-top: 2px; }
+    
+    .demo-grid { display: grid; grid-template-columns: 1fr 340px; gap: 20px; }
+    
+    .demo-chart-box {
+      background: white; border: 1px solid var(--border);
+      border-radius: 12px; padding: 24px;
+    }
+    
+    .demo-chart-label { font-size: 15px; font-weight: 600; margin-bottom: 20px; }
+    
+    .demo-bar-chart {
+      display: flex; align-items: flex-end; gap: 8px; height: 120px;
+    }
+    
+    .demo-bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+    .demo-bar-fill {
+      width: 100%; border-radius: 4px 4px 0 0;
+      background: linear-gradient(180deg, var(--accent-3), var(--accent));
+      transition: height 1s ease;
+    }
+    .demo-bar-label { font-size: 11px; color: var(--ink-faint); }
+    
+    .demo-orders-box {
+      background: white; border: 1px solid var(--border);
+      border-radius: 12px; padding: 20px;
+    }
+    
+    .demo-orders-title { font-size: 15px; font-weight: 600; margin-bottom: 16px; }
+    
+    .demo-order {
+      display: flex; align-items: center; gap: 12px;
+      padding: 10px 0; border-bottom: 1px solid var(--border);
+    }
+    .demo-order:last-child { border-bottom: none; }
+    
+    .demo-order-avatar {
+      width: 32px; height: 32px; border-radius: 50%;
+      display: grid; place-items: center; font-size: 12px; font-weight: 700; flex-shrink: 0;
+    }
+    
+    .demo-order-info { flex: 1; }
+    .demo-order-name { font-size: 13px; font-weight: 600; }
+    .demo-order-id { font-size: 12px; color: var(--ink-faint); }
+    
+    .demo-order-status {
+      font-size: 11px; font-weight: 600; padding: 3px 8px; border-radius: 100px;
+    }
+    
+    /* ============================================================
+       STORE DEMO
+    ============================================================ */
+    
+    .store-preview {
+      background: white; border: 1px solid var(--border);
+      border-radius: 20px; overflow: hidden;
+      box-shadow: var(--shadow-lg);
+    }
+    
+    .store-header {
+      background: linear-gradient(135deg, var(--ink-soft), var(--ink));
+      padding: 40px 48px; color: white;
+      display: flex; align-items: center; gap: 24px;
+    }
+    
+    .store-logo {
+      width: 64px; height: 64px; border-radius: 16px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-3));
+      display: grid; place-items: center;
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-weight: 800; font-size: 24px; color: white; flex-shrink: 0;
+    }
+    
+    .store-name { font-size: 26px; font-weight: 800; margin-bottom: 4px; }
+    .store-tagline { font-size: 15px; opacity: 0.6; }
+    
+    .store-nav {
+      padding: 0 48px;
+      background: white; border-bottom: 1px solid var(--border);
+      display: flex; gap: 2px;
+    }
+    
+    .store-nav-item {
+      padding: 16px 20px; font-size: 14px; font-weight: 500;
+      color: var(--ink-muted); cursor: pointer;
+      border-bottom: 2px solid transparent; margin-bottom: -1px;
+    }
+    .store-nav-item.active { color: var(--accent); border-color: var(--accent); }
+    
+    .store-body { padding: 40px 48px; }
+    
+    .store-product-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+    
+    .product-card {
+      border: 1px solid var(--border); border-radius: 12px; overflow: hidden;
+      transition: all 0.2s; cursor: pointer;
+    }
+    .product-card:hover { box-shadow: var(--shadow); transform: translateY(-2px); }
+    
+    .product-image {
+      aspect-ratio: 1; display: flex; align-items: center; justify-content: center;
+      font-size: 40px; background: var(--surface-2);
+    }
+    
+    .product-info { padding: 14px; }
+    .product-name { font-size: 14px; font-weight: 600; margin-bottom: 6px; }
+    .product-price { font-size: 16px; font-weight: 700; color: var(--accent); }
+    .product-stock { font-size: 12px; color: var(--ink-faint); margin-top: 4px; }
+    
+    .product-add {
+      width: 100%; padding: 10px;
+      background: var(--accent); color: white;
+      border: none; font-weight: 600; font-size: 13px;
+      cursor: pointer; font-family: 'DM Sans', sans-serif;
+      transition: background 0.2s;
+    }
+    .product-add:hover { background: var(--accent-2); }
+    
+    /* ============================================================
+       ARCH DIAGRAM
+    ============================================================ */
+    
+    .arch-diagram {
+      background: var(--ink);
+      border-radius: 20px; padding: 48px;
+      color: white;
+    }
+    
+    .arch-title {
+      font-size: 16px; font-weight: 600; color: rgba(255,255,255,0.5);
+      text-transform: uppercase; letter-spacing: 0.1em;
+      margin-bottom: 40px; text-align: center;
+    }
+    
+    .arch-layers { display: flex; flex-direction: column; gap: 16px; }
+    
+    .arch-layer {
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px; padding: 20px 24px;
+      background: rgba(255,255,255,0.03);
+    }
+    
+    .arch-layer-label {
+      font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.3);
+      text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 12px;
+    }
+    
+    .arch-layer-items { display: flex; gap: 12px; flex-wrap: wrap; }
+    
+    .arch-item {
+      display: flex; align-items: center; gap: 8px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 8px; padding: 8px 14px;
+      font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.7);
+    }
+    
+    .arch-item-dot { width: 8px; height: 8px; border-radius: 50%; }
+    
+    /* ============================================================
+       CTA
+    ============================================================ */
+    
+    .cta-section {
+      margin: 0 24px 80px;
+      background: linear-gradient(135deg, var(--ink-soft), var(--ink));
+      border-radius: 24px; padding: 80px 40px;
+      text-align: center; color: white;
+      position: relative; overflow: hidden;
+    }
+    
+    .cta-bg {
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 80% 80% at 50% -20%, rgba(139,92,246,0.3), transparent);
+    }
+    
+    .cta-content { position: relative; }
+    .cta-title { font-size: clamp(32px, 4vw, 52px); margin-bottom: 16px; }
+    .cta-sub { font-size: 18px; opacity: 0.6; margin-bottom: 40px; }
+    .cta-actions { display: flex; gap: 12px; justify-content: center; }
+    
+    /* ============================================================
+       FOOTER
+    ============================================================ */
+    
+    .footer {
+      background: var(--ink);
+      padding: 64px 48px 40px;
+      color: rgba(255,255,255,0.5);
+    }
+    
+    .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 48px; margin-bottom: 48px; }
+    
+    .footer-brand { }
+    .footer-logo {
+      display: flex; align-items: center; gap: 10px; margin-bottom: 16px;
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-weight: 800; font-size: 20px; color: white; text-decoration: none;
+    }
+    .footer-desc { font-size: 14px; line-height: 1.7; }
+    
+    .footer-col-title { font-size: 13px; font-weight: 600; color: white; margin-bottom: 16px; }
+    .footer-links { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+    .footer-links a { font-size: 14px; color: rgba(255,255,255,0.4); text-decoration: none; }
+    .footer-links a:hover { color: white; }
+    
+    .footer-bottom {
+      padding-top: 24px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 13px;
+    }
+    
+    /* ============================================================
+       ANIMATIONS
+    ============================================================ */
+    
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.5); opacity: 0.5; }
+    }
+    
+    .pulse { animation: pulse 2s ease infinite; }
+    
+    /* ============================================================
+       RESPONSIVE
+    ============================================================ */
+    
+    @media (max-width: 900px) {
+      .features-grid { grid-template-columns: 1fr 1fr; }
+      .pricing-grid { grid-template-columns: 1fr; max-width: 480px; margin: 0 auto; }
+      .steps { grid-template-columns: 1fr 1fr; }
+      .preview-body { grid-template-columns: 1fr; }
+      .preview-sidebar { display: none; }
+      .demo-stats { grid-template-columns: 1fr 1fr; }
+      .demo-grid { grid-template-columns: 1fr; }
+      .store-product-grid { grid-template-columns: repeat(2, 1fr); }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+      .arch-layer-items { }
+    }
+    
+    @media (max-width: 600px) {
+      .features-grid { grid-template-columns: 1fr; }
+      .steps { grid-template-columns: 1fr; }
+      .hero-stats { gap: 24px; }
+      .store-header { flex-direction: column; text-align: center; }
+      .store-body { padding: 24px; }
+      .store-nav { padding: 0 24px; overflow-x: auto; }
+      .footer-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ============================================================
+     NAVIGATION
+============================================================ -->
+<nav class="nav">
+  <a href="#" class="nav-logo">
+    <div class="nav-logo-mark">S</div>
+    ShopForge
+  </a>
+  <ul class="nav-links">
+    <li><a href="#features">Features</a></li>
+    <li><a href="#how-it-works">How It Works</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="#architecture">Architecture</a></li>
+  </ul>
+  <div class="nav-actions">
+    <a href="#" class="btn btn-ghost btn-sm">Log In</a>
+    <a href="#" class="btn btn-primary btn-sm">Start Free Trial →</a>
+  </div>
+</nav>
+
+<!-- ============================================================
+     HERO
+============================================================ -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="hero-badge">
+      <div class="hero-badge-dot pulse"></div>
+      Production-Ready SaaS Platform · v1.0
+    </div>
+    <h1>Build Your <em>Empire</em><br>Sell Anything, Anywhere</h1>
+    <p class="hero-sub">
+      Multi-tenant e-commerce SaaS platform. Launch your online store in minutes — 
+      complete with dashboard, payments, analytics, and everything you need to scale.
+    </p>
+    <div class="hero-actions">
+      <a href="#" class="btn btn-primary btn-lg">Create Your Store Free →</a>
+      <a href="#architecture" class="btn btn-ghost btn-lg">View Architecture</a>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="hero-stat-num">∞<span>+</span></div>
+        <div class="hero-stat-label">Stores Supported</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">3<span>s</span></div>
+        <div class="hero-stat-label">Setup Time</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">0<span>%</span></div>
+        <div class="hero-stat-label">Transaction Fee (Enterprise)</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     PLATFORM PREVIEW
+============================================================ -->
+<div class="platform-preview" style="animation: fadeInUp 0.8s 0.5s ease both; opacity: 0; animation-fill-mode: both;">
+  <div class="preview-window">
+    <div class="preview-titlebar">
+      <div class="preview-dots">
+        <div class="preview-dot"></div>
+        <div class="preview-dot"></div>
+        <div class="preview-dot"></div>
+      </div>
+      <div class="preview-url">shopforge.io/dashboard</div>
+    </div>
+    <div class="preview-body">
+      <div class="preview-sidebar">
+        <div class="preview-sidebar-logo">
+          <div class="preview-sidebar-logo-mark">S</div>
+          <div class="preview-sidebar-logo-text">ShopForge</div>
+        </div>
+        <div class="preview-nav-item active">
+          <div class="preview-nav-icon" style="background: #8b5cf6; opacity: 1; width: 14px; height: 14px; border-radius: 3px;"></div>
+          Overview
+        </div>
+        <div class="preview-nav-item">
+          <div class="preview-nav-icon"></div>
+          Products
+        </div>
+        <div class="preview-nav-item">
+          <div class="preview-nav-icon"></div>
+          Orders
+        </div>
+        <div class="preview-nav-item">
+          <div class="preview-nav-icon"></div>
+          Customers
+        </div>
+        <div class="preview-nav-item">
+          <div class="preview-nav-icon"></div>
+          Analytics
+        </div>
+        <div class="preview-nav-item">
+          <div class="preview-nav-icon"></div>
+          Settings
+        </div>
+      </div>
+      <div class="preview-main">
+        <div class="preview-header">
+          <div class="preview-title">Dashboard Overview</div>
+          <div class="preview-badge">● Live</div>
+        </div>
+        <div class="preview-stats">
+          <div class="preview-stat-card">
+            <div class="preview-stat-label">TOTAL REVENUE</div>
+            <div class="preview-stat-val">Rp 48.2M</div>
+            <div class="preview-stat-trend">↑ 23% this month</div>
+          </div>
+          <div class="preview-stat-card">
+            <div class="preview-stat-label">ORDERS</div>
+            <div class="preview-stat-val">1,294</div>
+            <div class="preview-stat-trend">↑ 18% this month</div>
+          </div>
+          <div class="preview-stat-card">
+            <div class="preview-stat-label">PRODUCTS</div>
+            <div class="preview-stat-val">84</div>
+            <div class="preview-stat-trend">12 active deals</div>
+          </div>
+          <div class="preview-stat-card">
+            <div class="preview-stat-label">CUSTOMERS</div>
+            <div class="preview-stat-val">3,890</div>
+            <div class="preview-stat-trend">↑ 9% this month</div>
+          </div>
+        </div>
+        <div class="preview-chart-row">
+          <div class="preview-chart">
+            <div class="preview-chart-title">Revenue (30 days)</div>
+            <div class="preview-chart-bars">
+              <div class="preview-bar" style="height: 40%"></div>
+              <div class="preview-bar" style="height: 55%"></div>
+              <div class="preview-bar" style="height: 35%"></div>
+              <div class="preview-bar high" style="height: 70%"></div>
+              <div class="preview-bar" style="height: 50%"></div>
+              <div class="preview-bar peak" style="height: 85%"></div>
+              <div class="preview-bar high" style="height: 65%"></div>
+              <div class="preview-bar" style="height: 45%"></div>
+              <div class="preview-bar peak" style="height: 90%"></div>
+              <div class="preview-bar high" style="height: 75%"></div>
+              <div class="preview-bar" style="height: 60%"></div>
+              <div class="preview-bar" style="height: 80%"></div>
+            </div>
+          </div>
+          <div class="preview-chart">
+            <div class="preview-chart-title">Orders by Status</div>
+            <div style="display: flex; gap: 16px; margin-top: 10px; flex-wrap: wrap;">
+              <div style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: rgba(255,255,255,0.5);">
+                <div style="width: 8px; height: 8px; border-radius: 2px; background: #34d399;"></div>Delivered 68%
+              </div>
+              <div style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: rgba(255,255,255,0.5);">
+                <div style="width: 8px; height: 8px; border-radius: 2px; background: #fbbf24;"></div>Pending 20%
+              </div>
+              <div style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: rgba(255,255,255,0.5);">
+                <div style="width: 8px; height: 8px; border-radius: 2px; background: #8b5cf6;"></div>Shipped 12%
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     FEATURES
+============================================================ -->
+<section class="section section-center" id="features">
+  <div class="section-tag">Platform Features</div>
+  <h2 class="section-title">Everything you need to<br>run a thriving online store</h2>
+  <p class="section-sub">Built for scale. Designed for simplicity. Powerful enough for enterprise.</p>
+  
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon">🏪</div>
+      <div class="feature-title">Multi-Tenant Architecture</div>
+      <p class="feature-desc">Each seller gets their own isolated store with custom slug, domain, branding, and complete data separation. One platform, infinite stores.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📊</div>
+      <div class="feature-title">Seller Dashboard</div>
+      <p class="feature-desc">Real-time analytics, revenue tracking, order management, and customer insights — all in one beautiful dashboard powered by Redis-cached data.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🛒</div>
+      <div class="feature-title">Full Shopping Experience</div>
+      <p class="feature-desc">Product listings, detail pages, cart, checkout with Stripe, order tracking, reviews, and wishlist — complete customer journey out of the box.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">💳</div>
+      <div class="feature-title">Subscription System</div>
+      <p class="feature-desc">Shopify-like plans (Basic, Professional, Enterprise) with product limits, feature gating, and Stripe subscription billing.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">⚡</div>
+      <div class="feature-title">Redis Caching</div>
+      <p class="feature-desc">High-performance Redis caching for product listings, store data, and dashboard analytics. Handles millions of requests per second.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🔐</div>
+      <div class="feature-title">Role-Based Access</div>
+      <p class="feature-desc">Three-tier role system: Admin controls the platform, Sellers manage their stores, Customers shop. JWT + refresh token auth with blacklisting.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📦</div>
+      <div class="feature-title">Product Management</div>
+      <p class="feature-desc">Rich product catalog with variants, inventory tracking, low-stock alerts, categories, discounts, coupons, and Cloudinary image upload.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📬</div>
+      <div class="feature-title">Background Job Queue</div>
+      <p class="feature-desc">BullMQ-powered queue system for email notifications, order confirmations, analytics tracking, and async processing at scale.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🛡️</div>
+      <div class="feature-title">Enterprise Security</div>
+      <p class="feature-desc">Helmet.js, rate limiting, input validation with Zod, CORS protection, SQL injection prevention via Prisma ORM, and more.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     HOW IT WORKS
+============================================================ -->
+<section style="background: var(--surface-2); padding: 100px 0;" id="how-it-works">
+  <div class="section section-center" style="margin: 0 auto;">
+    <div class="section-tag">Simple Process</div>
+    <h2 class="section-title">Launch your store in 4 steps</h2>
+    <p class="section-sub">From signup to first sale, ShopForge makes it effortless.</p>
+    
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-title">Sign Up as Seller</div>
+        <p class="step-desc">Create your account and get 14-day free trial of Professional plan instantly.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-title">Create Your Store</div>
+        <p class="step-desc">Choose your store name, slug, logo, and theme. Live at yourstore.shopforge.io in seconds.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-title">Add Products</div>
+        <p class="step-desc">Upload products with images, variants, pricing, and inventory tracking via the seller dashboard.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-title">Start Selling</div>
+        <p class="step-desc">Share your store URL. Customers browse, cart, checkout, and pay — all automated.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     DASHBOARD DEMO
+============================================================ -->
+<section class="section" style="max-width: 1100px; margin: 0 auto; padding: 80px 24px;" id="dashboard">
+  <div class="section-tag">Live Demo</div>
+  <h2 class="section-title">Seller Dashboard</h2>
+  <p style="font-size: 17px; color: var(--ink-muted); margin-bottom: 40px;">Complete analytics and store management for every seller.</p>
+  
+  <div class="dashboard-demo">
+    <div class="demo-header">
+      <div>
+        <div class="demo-title">Toko Baju Keren 👕</div>
+        <div class="demo-subtitle">platform.shopforge.io/toko-baju-keren</div>
+      </div>
+      <a href="#" class="btn btn-primary btn-sm">View Live Store →</a>
+    </div>
+    
+    <div class="demo-stats">
+      <div class="demo-stat">
+        <div class="demo-stat-icon" style="background: #ede9fe;">💰</div>
+        <div class="demo-stat-val">Rp 24.8M</div>
+        <div class="demo-stat-label">Total Revenue</div>
+        <div class="demo-stat-change">↑ 14% vs last month</div>
+      </div>
+      <div class="demo-stat">
+        <div class="demo-stat-icon" style="background: #dbeafe;">📦</div>
+        <div class="demo-stat-val">348</div>
+        <div class="demo-stat-label">Total Orders</div>
+        <div class="demo-stat-change">↑ 8% vs last month</div>
+      </div>
+      <div class="demo-stat">
+        <div class="demo-stat-icon" style="background: #d1fae5;">👥</div>
+        <div class="demo-stat-val">1,240</div>
+        <div class="demo-stat-label">Customers</div>
+        <div class="demo-stat-change">↑ 22% vs last month</div>
+      </div>
+      <div class="demo-stat">
+        <div class="demo-stat-icon" style="background: #fef3c7;">⭐</div>
+        <div class="demo-stat-val">4.8</div>
+        <div class="demo-stat-label">Avg Rating</div>
+        <div class="demo-stat-change">From 234 reviews</div>
+      </div>
+    </div>
+    
+    <div class="demo-grid">
+      <div class="demo-chart-box">
+        <div class="demo-chart-label">Revenue Last 7 Days</div>
+        <div class="demo-bar-chart" id="revChart">
+          <div class="demo-bar-col">
+            <div class="demo-bar-fill" style="height: 40%;"></div>
+            <div class="demo-bar-label">Mon</div>
+          </div>
+          <div class="demo-bar-col">
+            <div class="demo-bar-fill" style="height: 65%;"></div>
+            <div class="demo-bar-label">Tue</div>
+          </div>
+          <div class="demo-bar-col">
+            <div class="demo-bar-fill" style="height: 50%;"></div>
+            <div class="demo-bar-label">Wed</div>
+          </div>
+          <div class="demo-bar-col">
+            <div class="demo-bar-fill" style="height: 80%;"></div>
+            <div class="demo-bar-label">Thu</div>
+          </div>
+          <div class="demo-bar-col">
+            <div class="demo-bar-fill" style="height: 55%;"></div>
+            <div class="demo-bar-label">Fri</div>
+          </div>
+          <div class="demo-bar-col">
+            <div class="demo-bar-fill" style="height: 95%;"></div>
+            <div class="demo-bar-label">Sat</div>
+          </div>
+          <div class="demo-bar-col">
+            <div class="demo-bar-fill" style="height: 70%;"></div>
+            <div class="demo-bar-label">Sun</div>
+          </div>
+        </div>
+      </div>
+      <div class="demo-orders-box">
+        <div class="demo-orders-title">Recent Orders</div>
+        <div class="demo-order">
+          <div class="demo-order-avatar" style="background: #ede9fe; color: var(--accent);">AN</div>
+          <div class="demo-order-info">
+            <div class="demo-order-name">Andi Nugroho</div>
+            <div class="demo-order-id">#ORD-2847 · 2 items</div>
+          </div>
+          <div class="demo-order-status" style="background: var(--green-light); color: var(--green);">Delivered</div>
+        </div>
+        <div class="demo-order">
+          <div class="demo-order-avatar" style="background: #dbeafe; color: var(--blue);">SR</div>
+          <div class="demo-order-info">
+            <div class="demo-order-name">Siti Rahayu</div>
+            <div class="demo-order-id">#ORD-2846 · 1 item</div>
+          </div>
+          <div class="demo-order-status" style="background: var(--amber-light); color: var(--amber);">Shipped</div>
+        </div>
+        <div class="demo-order">
+          <div class="demo-order-avatar" style="background: #d1fae5; color: var(--green);">BP</div>
+          <div class="demo-order-info">
+            <div class="demo-order-name">Budi Pratama</div>
+            <div class="demo-order-id">#ORD-2845 · 3 items</div>
+          </div>
+          <div class="demo-order-status" style="background: var(--accent-light); color: var(--accent);">Processing</div>
+        </div>
+        <div class="demo-order">
+          <div class="demo-order-avatar" style="background: #fef3c7; color: var(--amber);">DW</div>
+          <div class="demo-order-info">
+            <div class="demo-order-name">Dewi Wulandari</div>
+            <div class="demo-order-id">#ORD-2844 · 2 items</div>
+          </div>
+          <div class="demo-order-status" style="background: var(--surface-2); color: var(--ink-muted);">Pending</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     STORE PREVIEW
+============================================================ -->
+<section class="section" style="max-width: 1100px; margin: 0 auto; padding: 40px 24px 80px;">
+  <div class="section-tag">Customer Experience</div>
+  <h2 class="section-title" style="margin-bottom: 16px;">Beautiful storefronts,<br>out of the box</h2>
+  <p style="font-size: 17px; color: var(--ink-muted); margin-bottom: 40px;">Every store is a complete e-commerce experience.</p>
+  
+  <div class="store-preview">
+    <div class="store-header">
+      <div class="store-logo">TB</div>
+      <div>
+        <div class="store-name">Toko Baju Keren</div>
+        <div class="store-tagline">Fashion terbaik untuk gaya hidupmu ✨</div>
+      </div>
+      <div style="margin-left: auto; display: flex; gap: 12px; align-items: center;">
+        <div style="display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.1); padding: 8px 16px; border-radius: 8px;">
+          <span style="font-size: 20px;">🛒</span>
+          <span style="font-size: 14px;">Cart (3)</span>
+        </div>
+      </div>
+    </div>
+    <div class="store-nav">
+      <div class="store-nav-item active">All Products</div>
+      <div class="store-nav-item">T-Shirts</div>
+      <div class="store-nav-item">Kemeja</div>
+      <div class="store-nav-item">Celana</div>
+      <div class="store-nav-item">Accessories</div>
+    </div>
+    <div class="store-body">
+      <div class="store-product-grid">
+        <div class="product-card">
+          <div class="product-image">👕</div>
+          <div class="product-info">
+            <div class="product-name">Kaos Polos Premium</div>
+            <div class="product-price">Rp 89.000</div>
+            <div class="product-stock">Stok: 142 pcs</div>
+          </div>
+          <button class="product-add">+ Tambah ke Keranjang</button>
+        </div>
+        <div class="product-card">
+          <div class="product-image">👗</div>
+          <div class="product-info">
+            <div class="product-name">Kemeja Oxford Slim</div>
+            <div class="product-price">Rp 185.000</div>
+            <div class="product-stock">Stok: 68 pcs</div>
+          </div>
+          <button class="product-add">+ Tambah ke Keranjang</button>
+        </div>
+        <div class="product-card">
+          <div class="product-image">👖</div>
+          <div class="product-info">
+            <div class="product-name">Celana Chino Slim Fit</div>
+            <div class="product-price">Rp 225.000</div>
+            <div class="product-stock">Stok: 35 pcs</div>
+          </div>
+          <button class="product-add">+ Tambah ke Keranjang</button>
+        </div>
+        <div class="product-card">
+          <div class="product-image">🧥</div>
+          <div class="product-info">
+            <div class="product-name">Jaket Hoodie Fleece</div>
+            <div class="product-price">Rp 320.000</div>
+            <div class="product-stock">Stok: 20 pcs</div>
+          </div>
+          <button class="product-add">+ Tambah ke Keranjang</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     ARCHITECTURE
+============================================================ -->
+<section style="background: var(--surface-2); padding: 100px 0;" id="architecture">
+  <div style="max-width: 1100px; margin: 0 auto; padding: 0 24px;">
+    <div class="section-tag">Technical Architecture</div>
+    <h2 class="section-title" style="margin-bottom: 16px;">Built for scale from day one</h2>
+    <p style="font-size: 17px; color: var(--ink-muted); margin-bottom: 48px; max-width: 560px;">Modern microservices-ready monolith with clear separation of concerns.</p>
+    
+    <div class="arch-diagram">
+      <div class="arch-title">System Architecture — ShopForge SaaS Platform</div>
+      <div class="arch-layers">
+        <div class="arch-layer">
+          <div class="arch-layer-label">🌐 Client Layer</div>
+          <div class="arch-layer-items">
+            <div class="arch-item"><div class="arch-item-dot" style="background: #60a5fa;"></div>Next.js 14 App Router</div>
+            <div class="arch-item"><div class="arch-item-dot" style="background: #60a5fa;"></div>React 18 + Hooks</div>
+            <div class="arch-item"><div class="arch-item-dot" style="background: #60a5fa;"></div>Tailwind CSS</div>
+            <div class="arch-item"><div class="arch-item-dot" style="background: #60a5fa;"></div>Zustand State</div>
+            <div class="arch-item"><div class="arch-item-dot" style="background: #60a5fa;"></div>TanStack Query</div>
+            <div class="arch-item"><div class="arch-item-dot" style="background: #60a5fa;"></div>Framer Motion</div>
+          </div>
+        </div>
+        <div class="arch-layer">
+          <div class="arch-layer-label">🚀 API Gateway Layer</div>
+          <div class="arch-layer-items">
+            <div class="arch-item"><div class="arch-item-dot" style="background: #a78bfa;"></div>Node.js + Express</div>
+            <div class="arch-item"><div class="arch-item-dot" style="background: #a78bfa;"></div>JWT Auth + Refresh Tokens</div>
+            <div class="arch-item"><div class="arch-item-dot" style="background: #a78bfa;"></div>Rate Limiting</div>
+            <div class="arch-item"><div class="arch-item-dot" style="background: #a78bfa;"></div>Helmet.js Security</div>
+            <div class="arch-item"><div class="arch-item-dot" style="background: #a78bfa;"></div>Zod Validation</div>
+            <div class="arch-item"><div class="arch-item-dot" style="background: #a78bfa;"></div>CORS + Compression</div>
+          </div>
+        </div>
+        <div class="arch-layer">
+          <div class="arch-layer-label">⚙️ Business Logic Layer</div>
+          <div class="arch-layer-items">
+            <div class="arch-item"><div class="arch-item-dot" style="background: #34d399;"></div>Auth Service</div>
+            <div class="arch-item"><div class="arch-item-dot" style="background: #34d399;"></div>Store Service</div>
+            <div class="arch-item"><div class="arch-item-dot" style="background: #34d399;"></div>Product Service</div>
+            <div class="arch-item"><div class="arch-item-dot" style="background: #34d399;"></div>Order Service</div>
+            <div class="arch-item"><div class="arch-item-dot" style="background: #34d399;"></div>Payment Service</div>
+            <div class="arch-item"><div class="arch-item-dot" style="background: #34d399;"></div>Analytics Service</div>
+            <div class="arch-item"><div class="arch-item-dot" style="background: #34d399;"></div>Subscription Service</div>
+          </div>
+        </div>
+        <div class="arch-layer">
+          <div class="arch-layer-label">💾 Data Layer</div>
+          <div class="arch-layer-items">
+            <div class="arch-item"><div class="arch-item-dot" style="background: #fbbf24;"></div>PostgreSQL (Primary DB)</div>
+            <div class="arch-item"><div class="arch-item-dot" style="background: #fbbf24;"></div>Prisma ORM</div>
+            <div class="arch-item"><div class="arch-item-dot" style="background: #fbbf24;"></div>Redis Cache</div>
+            <div class="arch-item"><div class="arch-item-dot" style="background: #fbbf24;"></div>BullMQ Queue</div>
+            <div class="arch-item"><div class="arch-item-dot" style="background: #fbbf24;"></div>Cloudinary / S3</div>
+            <div class="arch-item"><div class="arch-item-dot" style="background: #fbbf24;"></div>Elasticsearch (Search)</div>
+          </div>
+        </div>
+        <div class="arch-layer">
+          <div class="arch-layer-label">🌍 Infrastructure Layer</div>
+          <div class="arch-layer-items">
+            <div class="arch-item"><div class="arch-item-dot" style="background: #fb7185;"></div>Vercel (Frontend)</div>
+            <div class="arch-item"><div class="arch-item-dot" style="background: #fb7185;"></div>Railway / Render (Backend)</div>
+            <div class="arch-item"><div class="arch-item-dot" style="background: #fb7185;"></div>Supabase / Neon (DB)</div>
+            <div class="arch-item"><div class="arch-item-dot" style="background: #fb7185;"></div>Upstash (Redis)</div>
+            <div class="arch-item"><div class="arch-item-dot" style="background: #fb7185;"></div>Stripe (Payments)</div>
+            <div class="arch-item"><div class="arch-item-dot" style="background: #fb7185;"></div>Resend (Email)</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     PRICING
+============================================================ -->
+<section class="section section-center" id="pricing" style="max-width: 1100px; margin: 0 auto;">
+  <div class="section-tag">Pricing Plans</div>
+  <h2 class="section-title">Simple, scalable pricing</h2>
+  <p class="section-sub">Start free, scale as you grow. No hidden fees.</p>
+  
+  <div class="pricing-grid">
+    <div class="pricing-card">
+      <div class="pricing-plan">BASIC</div>
+      <div class="pricing-price">Rp 99K</div>
+      <div class="pricing-period">per bulan</div>
+      <div class="pricing-divider"></div>
+      <ul class="pricing-features">
+        <li><div class="pricing-check">✓</div>25 Products</li>
+        <li><div class="pricing-check">✓</div>Basic Analytics</li>
+        <li><div class="pricing-check">✓</div>Email Support</li>
+        <li><div class="pricing-check">✓</div>Custom Domain</li>
+        <li><div class="pricing-check">✓</div>2% Transaction Fee</li>
+        <li><div class="pricing-check">✓</div>SSL Certificate</li>
+      </ul>
+      <a href="#" class="btn btn-outline" style="width: 100%; justify-content: center;">Get Started</a>
+    </div>
+    
+    <div class="pricing-card featured">
+      <div class="pricing-popular">⚡ Most Popular</div>
+      <div class="pricing-plan">PROFESSIONAL</div>
+      <div class="pricing-price">Rp 299K</div>
+      <div class="pricing-period">per bulan</div>
+      <div class="pricing-divider"></div>
+      <ul class="pricing-features">
+        <li><div class="pricing-check">✓</div>250 Products</li>
+        <li><div class="pricing-check">✓</div>Advanced Analytics</li>
+        <li><div class="pricing-check">✓</div>Priority Support</li>
+        <li><div class="pricing-check">✓</div>Custom Domain</li>
+        <li><div class="pricing-check">✓</div>1% Transaction Fee</li>
+        <li><div class="pricing-check">✓</div>Coupons & Discounts</li>
+        <li><div class="pricing-check">✓</div>Product Variants</li>
+        <li><div class="pricing-check">✓</div>Inventory Alerts</li>
+      </ul>
+      <a href="#" class="btn btn-primary" style="width: 100%; justify-content: center; background: linear-gradient(135deg, #a78bfa, #8b5cf6);">Start Free Trial</a>
+    </div>
+    
+    <div class="pricing-card">
+      <div class="pricing-plan">ENTERPRISE</div>
+      <div class="pricing-price">Rp 799K</div>
+      <div class="pricing-period">per bulan</div>
+      <div class="pricing-divider"></div>
+      <ul class="pricing-features">
+        <li><div class="pricing-check">✓</div>Unlimited Products</li>
+        <li><div class="pricing-check">✓</div>Full Analytics Suite</li>
+        <li><div class="pricing-check">✓</div>24/7 Dedicated Support</li>
+        <li><div class="pricing-check">✓</div>Custom Domain</li>
+        <li><div class="pricing-check">✓</div>0% Transaction Fee</li>
+        <li><div class="pricing-check">✓</div>All Pro Features</li>
+        <li><div class="pricing-check">✓</div>API Access</li>
+        <li><div class="pricing-check">✓</div>White Label Options</li>
+      </ul>
+      <a href="#" class="btn btn-outline" style="width: 100%; justify-content: center;">Contact Sales</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     CTA
+============================================================ -->
+<div class="cta-section">
+  <div class="cta-bg"></div>
+  <div class="cta-content">
+    <h2 class="cta-title">Ready to build your store empire?</h2>
+    <p class="cta-sub">Join thousands of sellers growing their business with ShopForge. Free 14-day trial, no credit card required.</p>
+    <div class="cta-actions">
+      <a href="#" class="btn btn-primary btn-lg" style="background: white; color: var(--accent);">Start Building Free →</a>
+      <a href="#" class="btn btn-lg" style="border: 2px solid rgba(255,255,255,0.3); color: white; background: transparent;">View API Docs</a>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     FOOTER
+============================================================ -->
+<footer class="footer">
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a href="#" class="footer-logo">
+        <div class="nav-logo-mark">S</div>
+        ShopForge
+      </a>
+      <p class="footer-desc">
+        The complete SaaS e-commerce platform for entrepreneurs and developers. 
+        Built with Next.js, Node.js, PostgreSQL, and Redis.
+      </p>
+    </div>
+    <div>
+      <div class="footer-col-title">Platform</div>
+      <ul class="footer-links">
+        <li><a href="#">Features</a></li>
+        <li><a href="#">Pricing</a></li>
+        <li><a href="#">Changelog</a></li>
+        <li><a href="#">Status</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Developers</div>
+      <ul class="footer-links">
+        <li><a href="#">API Docs</a></li>
+        <li><a href="#">GitHub</a></li>
+        <li><a href="#">Architecture</a></li>
+        <li><a href="#">Deploy Guide</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Company</div>
+      <ul class="footer-links">
+        <li><a href="#">About</a></li>
+        <li><a href="#">Blog</a></li>
+        <li><a href="#">Privacy</a></li>
+        <li><a href="#">Terms</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2024 ShopForge. Built with ❤️ as a SaaS startup template.</span>
+    <span>Next.js · Node.js · PostgreSQL · Redis · Stripe</span>
+  </div>
+</footer>
+
+<script>
+  // Smooth scroll
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const href = a.getAttribute('href');
+      if (href.length > 1) {
+        e.preventDefault();
+        document.querySelector(href)?.scrollIntoView({ behavior: 'smooth' });
+      }
+    });
+  });
+  
+  // Animate elements on scroll
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.style.opacity = '1';
+        e.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, { threshold: 0.1 });
+  
+  document.querySelectorAll('.feature-card, .step, .pricing-card, .demo-stat').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(20px)';
+    el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+    observer.observe(el);
+  });
+  
+  // Animate bars
+  document.querySelectorAll('.demo-bar-fill').forEach(bar => {
+    const height = bar.style.height;
+    bar.style.height = '0';
+    setTimeout(() => { bar.style.transition = 'height 1s ease'; bar.style.height = height; }, 500);
+  });
+  
+  // Nav scroll effect
+  window.addEventListener('scroll', () => {
+    const nav = document.querySelector('.nav');
+    if (window.scrollY > 20) {
+      nav.style.borderBottom = '1px solid var(--border-strong)';
+    } else {
+      nav.style.borderBottom = '1px solid var(--border)';
+    }
+  });
+</script>
+</body>
+</html>
